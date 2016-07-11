@@ -14,8 +14,14 @@ $(document).ready(function() {
 
  $('#search-form').on('submit', function(e) {
     e.preventDefault();
+
     var formData = $(this).serialize();
     console.log(formData);
+
+    $.post('/api/albums', formData, function(album) {
+      console.log(album);
+      renderAlbum(album); //render server's reponse
+    });
     $(this).trigger("reset"); 
   });  
 });
@@ -70,18 +76,4 @@ function renderAlbum(album) {
   // render to the page with jQuery
   $('#albums').append(albumHtml);
 
-    /*$('#newBookForm').on('submit', function(e) {
-    e.preventDefault();
-    console.log('new book serialized', $(this).serializeArray());
-    $.ajax({
-      method: 'POST',
-      url: '/api/books',
-      data: $(this).serializeArray(),
-      success: newBookSuccess,
-      error: newBookError
-    });
-  });*/
-
-
-
-}
+  }

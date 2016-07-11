@@ -8,6 +8,11 @@ var app = express();
 // serve static files from public folder
 app.use(express.static(__dirname + '/public'));
 
+//body-parser
+var bodyParser = require('body-parser');
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); 
+
 /************
  * DATABASE *
  ************/
@@ -49,6 +54,23 @@ app.get('/api/albums', function album_index(req, res){
     res.json(albums);
   });
 });
+
+//CREATE AN ALBUM
+app.post('/api/albums', function(req,res){
+  var output = req.body;
+  console.log(output);
+  res.json(output);
+  var genres = output.genres;
+  var array = genres.split(",");
+  genres = array;
+
+  db.Album.create(req.body, function(err, album) {
+    if(err) {console.log('error', err); }
+      console.log(album);
+      res.json(album);
+  });
+});
+
 
 /**********
  * SERVER *
