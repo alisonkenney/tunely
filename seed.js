@@ -36,6 +36,35 @@ var albumsList =[
             }
 ];
 
+var sampleSongs = [
+
+            { name: 'Famous',
+            trackNumber: 1
+            },
+            { name: "All of the Lights",
+            trackNumber: 2
+            },
+            { name: 'Guilt Trip',
+            trackNumber: 3
+            },
+            { name: 'Paranoid',
+            trackNumber: 4
+            },
+            { name: 'Ultralight Beam',
+            trackNumber: 5
+            },
+            { name: 'Runaway',
+            trackNumber: 6
+            },
+            { name: 'Stronger',
+            trackNumber: 7
+            },
+];
+
+albumsList.forEach(function(album) {
+  album.songs = sampleSongs;
+});
+
 db.Album.remove({}, function(err, albums){
 
   db.Album.create(albumsList, function(err, albums){

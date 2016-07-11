@@ -24,9 +24,79 @@ $(document).ready(function() {
     });
     $(this).trigger("reset"); 
   });  
+
+  $('#albums').on('click', '.add-song', function(e) {
+    console.log("im working!");
+    var id = $(this).parents('.album').data('album-id');
+    console.log(id);
+    $('#songModal').data('album-id', id).modal();
+   
+  });
+
+  $('#albums').on('click', '.delete-album', function(e) {
+    var id= $(this).parents('.album').data('album-id');
+    console.log('album song id',id);
+    $.ajax({
+     url: '/api/albums/'+id,
+     type: 'DELETE',
+     success: function(result) {
+        deleteAlbum(id);
+    }
+    });
+  });
+
+  $('#saveSong').on('click', handleNewSongSubmit);
+
 });
 
- 
+
+// handles the modal fields and POSTing the form to the server
+
+  function handleNewSongSubmit(e) {
+    e.preventDefault();
+    var albumId = $('#songModal').data('album-id');
+    var songName = $('#songName').val();
+    var trackNumber = $('#trackNumber').val();
+
+    var data = {
+      name: songName,
+      trackNumber: trackNumber
+    };
+    console.log(data);
+    var url = "http://localhost:3000/api/albums/" + albumId + "/songs";
+     $.post(url, data, function(album) {
+        rerenderAlbum(albumId, album);
+     });
+     //clear 
+    $('#songName').val('');
+    $('#trackNumber').val('');
+    $('#songModal').modal('hide');     
+  }  
+
+  function rerenderAlbum(albumId, data) {
+  var oldAlbum = $("div").find("[data-album-id='" + albumId + "']");
+  oldAlbum.remove();
+  renderAlbum(data);
+  }
+
+
+  function buildSongsHtml(songs) {
+  var songText = "  &ndash; ";
+  songs.forEach(function(song) {
+     songText = songText + "(" + song.trackNumber + ") " + song.name + " &ndash; ";
+  });
+  var songsHtml  =
+  "                      <li class='list-group-item'>" +
+  "                        <h4 class='inline-header'>Songs:</h4>" +
+  "                         <span>" + songText + "</span>" +
+  "                      </li>";
+  return songsHtml;
+  }
+
+  function deleteAlbum(albumid) {
+  var oldalbum = $("div").find("[data-album-id='" + albumid + "']");
+  oldalbum.remove();
+}
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {
@@ -36,7 +106,7 @@ function renderAlbum(album) {
 
   var albumHtml =
   "        <!-- one album -->" +
-  "        <div class='row album' data-album-id='" + album.artistName + "'>" +
+  "        <div class='row album' data-album-id='" + album._id + "'>" +
   "          <div class='col-md-10 col-md-offset-1'>" +
   "            <div class='panel panel-default'>" +
   "              <div class='panel-body'>" +
@@ -59,6 +129,7 @@ function renderAlbum(album) {
   "                        <h4 class='inline-header'>Released date:</h4>" +
   "                        <span class='album-releaseDate'>" + album.releaseDate + "</span>" +
   "                      </li>" +
+                          buildSongsHtml(album.songs)+
   "                    </ul>" +
   "                  </div>" +
   "                </div>" +
@@ -67,6 +138,8 @@ function renderAlbum(album) {
   "              </div>" + // end of panel-body
 
   "              <div class='panel-footer'>" +
+  "                <button class='btn btn-primary add-song'>Add Song</button>" +
+  "                <button class='btn btn-primary delete-album'>Delete Album</button>" +
   "              </div>" +
 
   "            </div>" +
@@ -75,5 +148,6 @@ function renderAlbum(album) {
 
   // render to the page with jQuery
   $('#albums').append(albumHtml);
+
 
   }

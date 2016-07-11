@@ -56,7 +56,7 @@ app.get('/api/albums', function album_index(req, res){
 });
 
 //CREATE AN ALBUM
-app.post('/api/albums', function(req,res){
+app.post('/api/albums', function create_album(req,res){
   var output = req.body;
   console.log(output);
   res.json(output);
@@ -64,13 +64,46 @@ app.post('/api/albums', function(req,res){
   var array = genres.split(",");
   genres = array;
 
-  db.Album.create(req.body, function(err, album) {
+  db.Album.create(req.body, function (err, album) {
     if(err) {console.log('error', err); }
       console.log(album);
       res.json(album);
   });
 });
 
+//CREATE A SONG
+app.post('/api/albums/:album_id/songs', function create_song(req, res) {
+  var body = req.body;
+  var albumId = req.params.album_id;
+
+  db.Album.findOne({_id: albumId}, function (err, album) {
+    if (err){
+      res.send("Error: "+err);
+    }
+
+    var song = new db.Song(body);
+    album.songs.push(song);
+    album.save();
+    res.json(album);
+  });
+
+});
+
+//BY ID
+app.get('/api/albums/:id', function album_by_id(req, res){
+ var id = req.params.id;
+ db.Album.findOne({_id: id}, function (err, album) {
+   res.json(album);
+ });
+});
+
+//DELETE
+app.delete('/api/albums/:id', function delete_song(req, res){
+  var id = req.params.id;
+  db.Album.findOne({_id: id}).remove(function () {
+    res.send("Success");
+  });
+});
 
 /**********
  * SERVER *
