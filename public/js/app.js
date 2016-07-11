@@ -6,40 +6,21 @@
  */
 
 
-/* hard-coded data! */
-var sampleAlbums = [];
-sampleAlbums.push({
-             artistName: 'Ladyhawke',
-             name: 'Ladyhawke',
-             releaseDate: '2008, November 18',
-             genres: [ 'new wave', 'indie rock', 'synth pop' ]
-           });
-sampleAlbums.push({
-             artistName: 'The Knife',
-             name: 'Silent Shout',
-             releaseDate: '2006, February 17',
-             genres: [ 'synth pop', 'electronica', 'experimental' ]
-           });
-sampleAlbums.push({
-             artistName: 'Juno Reactor',
-             name: 'Shango',
-             releaseDate: '2000, October 9',
-             genres: [ 'electronic', 'goa trance', 'tribal house' ]
-           });
-sampleAlbums.push({
-             artistName: 'Philip Wesley',
-             name: 'Dark Night of the Soul',
-             releaseDate: '2008, September 12',
-             genres: [ 'piano' ]
-           });
-/* end of hard-coded data */
-
 $(document).ready(function() {
   console.log('app.js loaded!');
   $.get('/api/albums', function(data, status) {
     data.forEach(renderAlbum);
   });
+
+ $('#search-form').on('submit', function(e) {
+    e.preventDefault();
+    var formData = $(this).serialize();
+    console.log(formData);
+    $(this).trigger("reset"); 
+  });  
 });
+
+ 
 
 // this function takes a single album and renders it to the page
 function renderAlbum(album) {
@@ -88,5 +69,19 @@ function renderAlbum(album) {
 
   // render to the page with jQuery
   $('#albums').append(albumHtml);
+
+    /*$('#newBookForm').on('submit', function(e) {
+    e.preventDefault();
+    console.log('new book serialized', $(this).serializeArray());
+    $.ajax({
+      method: 'POST',
+      url: '/api/books',
+      data: $(this).serializeArray(),
+      success: newBookSuccess,
+      error: newBookError
+    });
+  });*/
+
+
 
 }
