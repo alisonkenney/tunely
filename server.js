@@ -89,7 +89,7 @@ app.post('/api/albums/:album_id/songs', function create_song(req, res) {
 
 });
 
-//BY ID
+//ALBUM BY ID
 app.get('/api/albums/:id', function album_by_id(req, res){
  var id = req.params.id;
  db.Album.findOne({_id: id}, function (err, album) {
@@ -97,11 +97,11 @@ app.get('/api/albums/:id', function album_by_id(req, res){
  });
 });
 
-//DELETE
+//DELETE A SONG
 app.delete('/api/albums/:id', function delete_song(req, res){
   var id = req.params.id;
   db.Album.findOne({_id: id}).remove(function () {
-    res.send("Success");
+    res.send("Successfully deleted song");
   });
 });
 

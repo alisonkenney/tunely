@@ -37,11 +37,11 @@ $(document).ready(function() {
     var id= $(this).parents('.album').data('album-id');
     console.log('album song id',id);
     $.ajax({
-     url: '/api/albums/'+id,
-     type: 'DELETE',
-     success: function(result) {
+      url: '/api/albums/'+ id,
+      type: 'DELETE',
+      success: function(result) {
         deleteAlbum(id);
-    }
+      }
     });
   });
 
